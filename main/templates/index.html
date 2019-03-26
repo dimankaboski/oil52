@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+
+{% endblock links %}
+
+{% block content %}
+<!-- <div class="main" id="app2">
+    <div class="good" v-for="good in goods">
+        <h5>[[good.name]] [[good.description]] [[good.cost]] P</h5>
+    </div>
+    <button v-on:click="filtercost()">but</button>
+</div> -->
+<h3>Ассортимент продукции Addinol</h3>
+<hr>
+<div class="block">
+    <a class="name" href="/motoroil">
+        Моторные масла Addinol
+    </a>
+    <br>
+    <div class="goods">
+        {% for good in goods %}
+        <div class="good">
+            <div class="good-photo-promo">
+                <a href="/good/{{ good.id }}"><img src="{{ good.img.url }}" width="100%" alt=""></a>
+            </div>
+            <a class="good-name" href="/good/{{ good.id }}">
+                {{good.name}}, {{good.volume}}
+            </a>
+            <div class="good-cost">
+                <strong>{{good.cost}} Руб</strong>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<div class="block">
+    <a class="name" href="/transmission">
+        Трансмиссионные масла Addinol
+    </a>
+    <br>
+    <div class="goods">
+        {% for good in goods_trans %}
+        <div class="good">
+            <div class="good-photo-promo">
+                <a href="/good/{{ good.id }}"><img src="{{ good.img.url }}" width="100%" alt=""></a> 
+            </div>
+            <a class="good-name" href="/good/{{ good.id }}">
+                {{good.name}}, {{good.volume}}
+            </a>
+            <div class="good-cost">
+                <strong>{{good.cost}} Руб</strong>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<h3>О продукции Addinol</h3>
+<h4>Addinol - немецкое качество с 1936 года</h4>
+<div class="text-about">
+    <p>Компания ADDINOL Lube Oil GmbH, ведущий производитель
+        высокотехнологичных смазочных материалов нового поколения, была основана в 1936
+        году в Германии. Успев завоевать основные рынки мира, в 2000 году ADDINOL начал
+        покорять Россию.</p>
+    <p>Ассортимент Addinol для автомобильного сектора охватывает моторные и трансмиссионные масла, выполняющие
+        требования наивысших международных классов качества. Великолепное качество смазочных материалов Addinol для
+        легковых и грузовых автомобилей подтверждают более 150 именных лицензий ведущих фирм-изготовителей автомобилей
+        и комплектного оборудования (Original Equipment Manufacturer). В их число входят Mercedes-Benz, Volkswagen
+        Group, BMW, MAN, Porsche, Scania, Volvo и MTU. Addinol производит также масла для двигателей
+        теплоэлектростанций, работающих на природном и биологическом газе. Газомоторные масла Addinol имеют лицензии
+        таких известных производителей газовых двигателей как MAN, MTU Onsite Energy, MWM и GE Jenbacher.</p>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+
+    function compare(a, b) {
+        if (a.cost > b.cost)
+            return 1;
+        if (a.cost < b.cost)
+            return -1;
+        return 0;
+    }
+
+
+    var goods = new Vue({
+        el: '#app2',
+        delimiters: ['[[', ']]'],
+        data: {
+            goods: null,
+        },
+        methods: {
+            filtercost: function () {
+                this.goods.sort(function (a, b) {
+                    return a.cost - b.cost;
+                });
+            },
+        },
+        mounted() {
+            fetch('../getgoods', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.goods = responseJson;
+                    console.log(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        }
+    });
+
+</script>
+{% endblock scripts %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock links %}
+
+{% block content %}
+<div id="app2">
+    <h4><b>Ваша корзина: [[goodcount()]] </b></h4>
+    <div class="main-cart">
+        <div class="goods">
+            <div class="good" v-for="good, test in goods">
+                <div class="good-img">
+                    <div class="image">
+                        <img :src="getSrc(good.img)" width="100%" alt="">
+                    </div>
+                </div>
+                <a :href="'/' + 'good/'+good.id" class="good-name">
+                    [[good.name]], [[good.volume]]
+                </a>
+                <div class="good-count">
+                    <input type="button" class="count" value="-" v-on:click="countmin([[test]])"><input type="text"
+                        class="input-count" :value="getcount([[test]])" readonly style="cursor: default;"><input type="button"
+                        class="count" value="+" v-on:click="countplus([[test]])">
+                </div>
+                <div class="good-cost">
+                    <div class="cost">
+                        [[good.cost]] ₽
+                    </div>
+                    <div class="good-delete" v-on:click="gooddelete([[test]])">
+                        Удалить
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="accept-cart">
+            <div class="goods-sum">
+                <div class="total">
+                    Итого:
+                </div>
+                <div class="sum">
+                    <b>[[getSum()]]</b> ₽
+                </div>
+            </div>
+            <a href="/order/"><button class="buy">Оформить заказ</button></a>
+        </div>
+    </div>
+</div>
+<div class="notes" id="notes">
+    <div class="allert" id="allert">
+        <div class="allerttitle" id="allert_name">
+            Товар удален из корзины
+        </div>
+        <div class="remove">
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block modal %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    var cart = new Vue({
+        el: '#app2',
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                goods: null,
+                padej: ['товар', 'товара', 'товаров'],
+            };
+        },
+        methods: {
+            getSrc: function (src) {
+                return '../media/' + src;
+            },
+            goodcount: function () {
+                if (this.goods.length < 5 && this.goods.length > 1)
+                    return this.goods.length + " " + this.padej[1];
+                if (this.goods.length < 20 && this.goods.length > 1)
+                    return this.goods.length + " " + this.padej[2];
+                if (this.goods.length === 1)
+                    return this.goods.length + " " + this.padej[0];
+                if (this.goods.length === 0)
+                    return 'Пусто';
+                else
+                    return this.goods.length + " " + this.padej[0];
+            },
+            getSum: function () {
+                let total = 0;
+                for (i = 0; i < this.goods.length; i++) {
+                    total = total + this.goods[i].count * this.goods[i].cost;
+                }
+                return total;
+            },
+            getcount: function (index) {
+                if (this.goods != undefined)
+                    return this.goods[index].count;
+                else
+                    return 0;
+            },
+            gooddelete: function (index) {
+                fetch('/gooddelete/' + this.goods[index].id, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        alert(this.goods[index].name);
+                        this.goods.splice(index, 1);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+            countmin: function (index) {
+                if (this.goods[index].count > 1)
+                    this.goods[index].count -= 1;
+                fetch('/changecount/' + this.goods[index].id + '/' + this.goods[index].count, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+            countplus: function (index) {
+                this.goods[index].count += 1;
+                fetch('/changecount/' + this.goods[index].id + '/' + this.goods[index].count, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        },
+        mounted() {
+            fetch('../getcart', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.goods = responseJson;
+                    console.log(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+    });
+
+    function closemodal() {
+        $('.modal').hide();
+        $('.wrapper').removeClass('blur');
+    }
+    function alert(name) {
+        var allert = document.getElementById('allert_name');
+        console.log(allert);
+        allert.innerHTML = name + ' удален из корзины!';
+        $('#notes').fadeIn(500).delay(2500).fadeOut(500);
+    }
+</script>
+{% endblock scripts %}

@@ -1,0 +1,127 @@
+.cat-main {
+    border-top: 1px solid #e6e7e8;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-gap: 30px;
+}
+.cat-main .filtres {
+    padding: 10px;
+    border-right: 1px solid #e6e7e8;
+    display: flex;
+    flex-direction: column;
+}
+.filtres .top {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.filtres .main {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    font-size: 1em;
+}
+.cat-main .all-goods {
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+}
+.item {
+    border: .5px rgb(219, 219, 219) solid;
+    margin: 5px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    padding: 10px;
+    transition: .1s;
+}
+
+.item:hover {
+    -webkit-box-shadow: 0px 0px 18px -6px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 18px -6px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 18px -6px rgba(0,0,0,0.75);
+}
+
+.item .image {
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.item .name {
+    flex: 1 0 auto;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.item .add {
+    flex: 0 0 auto;
+    cursor: pointer;
+}
+.add {
+    font-size: 2em;
+}
+.add .fa-cart-plus:hover {
+    color: rgb(201, 0, 0);
+}
+.cost {
+    font-size: 1.5em;
+}
+.top-header{
+    display: flex;
+    justify-content: space-between;
+}
+.top-header .sorting {
+    text-align: right;
+}
+/* Скрываем реальный чекбокс */
+.checkbox {
+	display: none;
+}
+/* Задаем внешний вид для нашего кастомного чекбокса. Все обязательные свойства прокомментированы, остальные же свойства меняйте по вашему усмотрению */
+.checkbox-custom {
+	position: relative;      /* Обязательно задаем, чтобы мы могли абсолютным образом позиционировать псевдоэлемент внютри нашего кастомного чекбокса */
+	width: 20px;             /* Обязательно задаем ширину */
+	height: 20px;            /* Обязательно задаем высоту */
+	border: 2px solid #ccc;
+	border-radius: 3px;
+}
+
+/* Кастомный чекбокс и лейбл центрируем по вертикали. Если вам это не требуется, то вы можете убрать свойство vertical-align: middle из данного правила, но свойство display: inline-block обязательно должно быть */
+.checkbox-custom,
+.label {
+	display: inline-block;
+    vertical-align: middle;
+    
+}
+/* Если реальный чекбокс у нас отмечен, то тогда добавляем данный признак и к нашему кастомному чекбоксу  */
+.checkbox:checked + .checkbox-custom::before {
+	content: "";             /* Добавляем наш псевдоэлемент */
+	display: block;			 /* Делаем его блочным элементом */
+	position: absolute;      /* Позиционируем его абсолютным образом */
+	/* Задаем расстояние от верхней, правой, нижней и левой границы */
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+	left: 2px;
+	background: #444136;     /* Добавляем фон. Если требуется, можете поставить сюда картинку в виде "галочки", которая будет символизировать, что чекбокс отмечен */
+	border-radius: 2px;
+}
+.notavailable {
+    color: #dbdbdb;
+}
+.all-goods-search {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

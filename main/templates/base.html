@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Бутстрап -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+    {% block links %}
+
+    {% endblock links %}
+    <title>Главная</title>
+</head>
+
+<body>
+    <div class="wrapper" id="wrapper">
+        <header>
+            <div class="header">
+                <div class="header-top">
+                    <div class="short">
+                        <ul class="headerhref">
+                            <li><a href="/">Главная</a></li>
+                            <li><a href="/deliver/">Доставка и оплата</a></li>
+                            <li><a href="/deliver/">Контакты</a></li>
+                        </ul>
+                        <ul class="headerhref">
+                            <li>г. Дзержинск</li>
+                            <li>+7 (999) 99 99 999</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="header-main">
+                    <div class="short">
+                        <a href="/" class="logo-border">
+                            <i class="fas fa-tint"></i>IL52
+                        </a>
+                        <div class="find">
+                            <form action="/find" method="get">
+                                <div class="search-form">
+                                    <input class="form-control" type="text" placeholder="Поиск товара" name="q"
+                                        required>
+                                    <button type="submit" class="btn btn-primary search-btn" value="Поиск"><i
+                                            class="fas fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-bot">
+                    <div class="short">
+                        <div class="header-menu">
+                            <a href="/motoroil/" class="menu-item">Моторное масло</a>
+                            <a href="/transmission/" class="menu-item">Трансмиссия</a>
+                            <a href="/mototechnic/" class="menu-item">Мототехника</a>
+                            <a href="/technical_liquid/" class="menu-item">Технические жидкости</a>
+                            <a href="/lubricants/" class="menu-item">Смазки</a>
+                        </div>
+                        <a href="/cart/" class="cart">
+
+                            <div class="cart-ico">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="cart-info" id="cartinfo">
+                                Товаров в корзине: <span id="cartcount">[[getcount()]]</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+        <main>
+            <div class="main-container">
+                {% block content %}
+
+                {% endblock content %}
+            </div>
+        </main>
+
+
+        <footer>
+            <div class="footer">
+                <div class="short">
+                    <div class="footer-main">
+                        <div class="catalog">
+                            <ul>
+                                <li class="firstli">Каталог товаров</li>
+                                <li>Моторное масло</li>
+                                <li>Трансмиссия</li>
+                                <li>Мототехника</li>
+                                <li>Технические жидкости</li>
+                                <li>Смазки</li>
+                            </ul>
+                        </div>
+                        <div class="about">
+                            <ul>
+                                <li class="firstli">Информация</li>
+                                <li>О продукции</li>
+                                <li>Оплата</li>
+                                <li>Доставка</li>
+                            </ul>
+                        </div>
+                        <div class="info">
+                            <img src="{% static 'img/logo.png' %}" class="footer-logo">
+                        </div>
+                    </div>
+                    <div class="footer-bot">
+                        <div class="block1">
+                            © 2019 Oil52.ru | Все материалы и цены, размещенные на сайте, носят справочный характер и не
+                            являются ни публичной офертой, определяемой положениями Статьи 437 (2) Гражданского кодекса
+                            Российской Федерации, ни рекламой. Уточнить актуальную стоимость и наличие вы можете у
+                            наших менеджеров.
+                        </div>
+                        <div class="block2">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    {% block modal %}
+    {% endblock %}
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Бутстрап -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    {% block scripts %}
+
+    {% endblock scripts %}
+    <script>
+        var cartinfo = new Vue({
+            el: '#cartinfo',
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    goods: null,
+                };
+            },
+            methods: {
+                getcount: function () {
+                    if (this.goods.length == 0) {
+                        return '0';
+                    }
+                    return this.goods.length;
+                },
+            },
+            mounted() {
+                fetch('../getcart', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        this.goods = responseJson;
+                        console.log(responseJson);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        });
+    </script>
+</body>
+
+</html>

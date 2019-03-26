@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/infopages.css' %}">
+{% endblock links %}
+
+{% block content %}
+<div class="good-top">
+    <a href="/"> Главная </a>/ <a href="/deliver/"> Доставка и оплата</a>
+</div>
+<div class="deliver-main">
+    <div class="text">
+        <h1>Доставка и оплата</h1>
+        <h4>Способы доставки</h4>
+        <p>Доставка заказов интернет-магазина Oil52 по Нижегородской области: </p>
+        <table>
+            <tr>
+                <td>Дзержинск</td>
+                <td>Бесплатно</td>
+                <td>1-2 дня</td>
+            </tr>
+            <tr>
+                <td>Нижний Новгород</td>
+                <td>300Р</td>
+                <td>1-2 дня</td>
+            </tr>
+            <tr>
+                <td>Другой город</td>
+                <td>300Р</td>
+                <td>1-7 дней</td>
+            </tr>
+        </table>
+        <p>Доставка заказов интернет-магазина Oil52 в другие регионы Российской Федерации осуществляются силами курьерских служб.</p>
+        <h4>Способы оплаты</h4>
+        <p>Оплата производится наличными при получении, либо переводом на карту.</p>
+    </div>
+</div>
+{% endblock content %}

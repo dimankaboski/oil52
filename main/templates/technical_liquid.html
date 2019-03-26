@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/catgoods.css' %}">
+
+{% endblock links %}
+
+{% block content %}
+<div id="app-liquid">
+    <div class="top-header">
+        <h4>Технические жидкости</h4>
+        <div class="sorting">
+            Сортировать по:
+            <select>
+                <option value="" selected>По умолчанию</option>
+                <option v-on:click="filtercost()">Сначала дороже</option>
+                <option>Сначала дешевле</option>
+            </select>
+        </div>
+    </div>
+
+    <br>
+    <div class="cat-main">
+        <div class="filtres">
+            <div class="top" id="mcbtn">
+                Назначение
+            </div>
+            <div class="main" id="sae">
+                <label id="agree">
+                    <input class="checkbox visco" id="viscosity" name="10W-40" type="checkbox" value="Cleaners"
+                        v-model="checkedfilters">
+                    <span class="checkbox-custom"></span>
+                    <span class="label" id="lvisco">Очистители</span>
+                </label>
+                <label>
+                    <input class="checkbox visco" id="viscosity" name="15W-40" type="checkbox" value="Antifreeze"
+                        v-model="checkedfilters">
+                    <span class="checkbox-custom"></span>
+                    <span class="label" id="lvisco">Антифриз</span>
+                </label>
+                <label>
+                    <input class="checkbox visco" id="viscosity" name="0W-30" type="checkbox" value="Antikor"
+                        v-model="checkedfilters">
+                    <span class="checkbox-custom"></span>
+                    <span class="label" id="lvisco">Антикор</span>
+                </label>
+                <label>
+                    <input class="checkbox visco" id="viscosity" name="5W-30" type="checkbox" value="Brake_fluids"
+                        v-model="checkedfilters">
+                    <span class="checkbox-custom"></span>
+                    <span class="label" id="lvisco">Тормозные жидкости</span>
+                </label>
+            </div>
+        </div>
+        <div class="all-goods">
+            <div class="item" v-for="good in FilteredGoods">
+                <a class="image" :href="'/' + 'good/'+good.id">
+                    <img :src="getSrc(good.img)" width="100%" alt="">
+                </a>
+                <div class="name">
+                    <a :href="'/' + 'good/'+good.id">[[good.name]], [[good.volume]]</a>
+                </div>
+                <div class="bottom">
+                    <div class="cost">
+                        [[good.cost]] ₽
+                    </div>
+                    <div class="add" v-if="checkcart(good.id)">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="add" :id="'addtocart'+good.id" v-else>
+                        <i class="fas fa-cart-plus" v-on:click='addToCart( [[good.id]] )'></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="notes" id="notes">
+    <div class="allert" id="allert">
+        <div class="allerttitle" id="allert_name">
+
+        </div>
+        <div class="remove">
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // $('#agree').attr('checked', true);
+    var goods = new Vue({
+        el: '#app-liquid',
+        delimiters: ['[[', ']]'],
+        data: {
+            cartgoods: null,
+            cartid: [],
+            goods: null,
+            filtered: null,
+            checkedfilters: [],
+            checkedtype: [],
+        },
+        methods: {
+            checkcart: function (id) {
+                console.log(this.cartid, id);
+                if (this.cartid.includes(id)) {
+                    return true;
+                }
+            },
+            getSrc: function (src) {
+                return '../media/' + src;
+            },
+            filtercost: function () {
+                console.log("OUE");
+                this.goods.sort(function (a, b) {
+                    return a.cost - b.cost;
+                });
+            },
+            filtertype: function () {
+
+            },
+            blockcheckbox: function (test) {
+                console.log(this.FilteredGoods);
+            },
+            addToCart: function (id) {
+                console.log(id);
+                fetch('/addtocart/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        var addcart = document.getElementById('addtocart' + id);
+                        var cartcount = document.getElementById('cartcount');
+                        cartcount.innerHTML = Number(cartcount.textContent) + 1;
+                        addcart.innerHTML = '<i class="fas fa-check"></i>';
+                        alert();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        },
+        mounted() {
+            fetch('../getgoods/Technical', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.goods = responseJson;
+                    this.filtered = responseJson
+                    console.log(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            fetch('../getcartinfo', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.cartgoodsid = responseJson;
+                    console.log(responseJson);
+                    for (var i = 0; i < this.cartgoodsid.length; i++) {
+                        this.cartid.push(this.cartgoodsid[i].id)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        },
+        computed: {
+            FilteredGoods() {
+                if (!this.checkedfilters.length && !this.checkedtype.length) {
+                    console.log('empty');
+                    return this.filtered;
+                }
+                else {
+                    var fvisc = this.goods.filter(elem => this.checkedfilters.includes(elem.tec_category))
+                    var ftype = this.goods.filter(elem => this.checkedtype.includes(elem.type))
+                    if (!this.checkedtype.length) {
+                        return fvisc;
+                    }
+                    else if (!this.checkedfilters.length) {
+                        return ftype;
+                    }
+                    else {
+                        return ftype.filter(elem => this.checkedfilters.includes(elem.viscosity));
+                    }
+                }
+            },
+        },
+    });
+    function alert() {
+        var allert = document.getElementById('allert_name');
+        allert.innerHTML = 'Товар добавлен в корзину!';
+        $('#notes').fadeIn(500).delay(2500).fadeOut(500);
+    }
+</script>
+{% endblock %}

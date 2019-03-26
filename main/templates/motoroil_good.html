@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/good.css' %}">
+{% endblock links %}
+
+{% block content %}
+{% for good in good %}
+<div class="good-top">
+    <a href="/"> Главная </a>/
+    {% if good.cat == 'Oil' %}
+    <a href="/motoroil/"> Моторные масла</a>
+    {% endif %}
+    {% if good.cat == 'transmission' %}
+    <a href="/transmission/"> Трансмиссия</a>
+    {% endif %}
+    {% if good.cat == 'Mototechnic' %}
+    <a href="/mototechnic/"> Мототехника</a>
+    {% endif %}
+    {% if good.cat == 'Technical' %}
+    <a href="/technical_liquid/"> Технические жидкости</a>
+    {% endif %}
+    {% if good.cat == 'Lubricants' %}
+    <a href="/lubricants/"> Смазки</a>
+    {% endif %}
+</div>
+
+<div class="good-main" id="app">
+    <div class="main-image"
+        style="background: url({{ good.img.url }}) no-repeat center center; background-size:contain;">
+
+    </div>
+    <div class="main-description">
+        <div class="good-name">
+            <div class="name">
+                {{good.name}}, {{good.volume}}
+            </div>
+            <br>
+            <div class="price">
+                {{good.cost}} ₽
+            </div>
+        </div>
+        <div class="good-about">
+            {% if good.type %}
+            <p><b>Тип масла: </b>{{good.type}}</p>
+            {% endif %}
+            {% if good.viscosity %}
+            <p><b>Вязкость: </b>{{good.viscosity}}</p>
+            {% endif %}
+            {% if good.viscosity_index %}
+            <p><b>Индекс вязкости: </b>{{good.viscosity_index}}</p>
+            {% endif %}
+            {% if good.viscosity_100c %}
+            <p><b>Вязкость при 100 °C, мм²/с: </b>{{good.viscosity_100c}}</p>
+            {% endif %}
+            {% if good.temp_lose %}
+            <p><b>Температура потери текучести, °C: </b>{{good.temp_lose}}</p>
+            {% endif %}
+            {% if good.temp_fire %}
+            <p><b>Температура вспышки, °C: </b>{{good.temp_fire}}</p>
+            {% endif %}
+        </div>
+        <div class="good-buy" v-if="checkcart({{good.id}})">
+            <button class="buy">Товар в корзине</button>
+        </div>
+        <div class="good-buy" v-else>
+            <button class="buy" v-on:click='addToCart({{ good.id }})'>Добавить в корзину</button>
+        </div>
+        <table class="good-also">
+            <tr>
+                <th>Объем</th>
+                <th>Цена</th>
+                <th>В корзину</th>
+            </tr>
+            {% for alsogood in alsogood %}
+            <tr>
+                <td>{{ alsogood.volume }}</td>
+                <td>{{ alsogood.cost }}₽</td>
+                <td>
+                    <div class="add" v-if="checkcart({{alsogood.id}})">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="add" :id="'addtocart'+{{alsogood.id}}" v-else>
+                        <i class="fas fa-cart-plus" v-on:click='addToCart({{ alsogood.id }})'></i>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+<br>
+<hr>
+<br>
+<div class="good-bot">
+    <h4>{{good.name}}</h4>
+    {{good.description | safe}}
+    <h3>Рекомендуем:</h3>
+    <div class="recomend_goods">
+        {% for good in othergoods %}
+        <div class="item">
+            <a class="image">
+                <a href="/good/{{good.id}}"><img src="{{ good.img.url }}" width="100%" alt=""></a> 
+            </a>
+            <a class="name" href="/good/{{good.id}}">
+                {{good.name}}
+            </a>
+            <div class="bottom">
+                <div class="cost">
+                    {{good.cost}}₽
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="notes" id="notes">
+    <div class="allert" id="allert">
+        <div class="allerttitle" id="allert_name">
+            
+        </div>
+        <div class="remove">
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var good = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            imgurl: '',
+            cartgoods: null,
+            cartid: [],
+        },
+        methods: {
+            checkcart: function (id) {
+                console.log(this.cartid, id);
+                if (this.cartid.includes(id)) {
+                    return true;
+                }
+            },
+            addToCart: function (id) {
+                console.log(id);
+                fetch('/addtocart/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        var addcart = document.getElementById('addtocart' + id);
+                        var cartcount = document.getElementById('cartcount');
+                        cartcount.innerHTML = Number(cartcount.textContent) + 1;
+                        addcart.innerHTML = '<i class="fas fa-check"></i>';
+                        console.log(addcart);
+                        alert();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        },
+        mounted() {
+            fetch('../getcartinfo', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.cartgoodsid = responseJson;
+                    console.log(responseJson);
+                    for (var i = 0; i < this.cartgoodsid.length; i++) {
+                        this.cartid.push(this.cartgoodsid[i].id)
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        },
+    });
+    function alert() {
+        var allert = document.getElementById('allert_name');
+        allert.innerHTML = 'Товар добавлен в корзину!';
+        $('#notes').fadeIn(500).delay(2500).fadeOut(500);
+    }
+</script>
+{% endblock scripts %}

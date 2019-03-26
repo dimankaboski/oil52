@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Заказной лист</title>
+</head>
+
+<body>
+    <style>
+        .title {
+            text-align: left;
+            padding: 5px;
+            background-color: rgb(235, 235, 235);
+        }
+
+        p {
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid rgb(207, 207, 207);
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid rgb(207, 207, 207);
+        }
+
+        td {
+            border: 1px solid rgb(196, 196, 196);
+            padding: 5px;
+        }
+    </style>
+        <p>Благодарим за покупку на нашем сайте. Ваш заказ принят и поступил в обработку.</p> 
+    <br>
+    <table style="width: 700px; border: 1px solid rgb(207, 207, 207);
+        border-collapse: collapse;">
+        <tr>
+            <th colspan="2" style="text-align: left;
+                padding: 5px;
+                background-color: rgb(235, 235, 235);
+                border: 1px solid rgb(207, 207, 207);">
+                Детализация заказа
+            </th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p><b>№ заказа: </b>{{order.id}}</p>
+                <p><b>Дата и время заказа: </b>{{order.created_date}}</p>
+                <p><b>Способ оплаты: </b>{{order.payment}}</p>
+            </td>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p><b>E-mail: </b>{{order.mail}}</p>
+                <p><b>Телефон: </b>{{order.phone}}</p>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table style="width: 700px; border: 1px solid rgb(207, 207, 207);
+        border-collapse: collapse;">
+        <tr>
+            <th colspan="2" style="text-align: left;
+            padding: 5px;
+            background-color: rgb(235, 235, 235);
+            border: 1px solid rgb(207, 207, 207);">
+                Контактная информация
+            </th>
+        </tr>
+        <tr>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p><b>Имя: </b>{{order.firstname}}</p>
+                <p><b>Фамилия: </b>{{order.lastname}}</p>
+            </td>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p><b>Адрес доставки: </b>{{order.adress}}</p>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table style="width: 700px; border: 1px solid rgb(207, 207, 207);
+        border-collapse: collapse;">
+        <tr>
+            <th style="text-align: left;
+            padding: 5px;
+            background-color: rgb(235, 235, 235);
+            border: 1px solid rgb(207, 207, 207);">
+                Наименование
+            </th>
+            <th style="text-align: left;
+            padding: 5px;
+            background-color: rgb(235, 235, 235);
+            border: 1px solid rgb(207, 207, 207);">Количество</th>
+            <th style="text-align: left;
+            padding: 5px;
+            background-color: rgb(235, 235, 235);
+            border: 1px solid rgb(207, 207, 207);">Цена</th>
+        </tr>
+        {% for good in cart_goods %}
+        <tr>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p>{{good.name}}</p>
+            </td>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p>{{good.count}}</p>
+            </td>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">
+                <p>{{good.cost}}</p>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2" style="text-align:right;border: 1px solid rgb(196, 196, 196);
+            padding: 5px;">Итого: </td>
+            <td style="border: 1px solid rgb(196, 196, 196);
+            padding: 5px;"><b>{{cart_sum}}</b></td>
+        </tr>
+    </table>
+    <h4>Комментарий к заказу:</h4>
+    <p style="max-width:500px;">{{order.description}}</p>
+</body>
+
+</html>

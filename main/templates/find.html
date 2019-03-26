@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/catgoods.css' %}">
+{% endblock links %}
+
+{% block content %}
+<p>Ваш поиск: <strong>{{ query }}</strong></p>
+{% if goods %}
+<div class="all-goods-search">
+{% for good in goods %}
+    <div class="item">
+        <a class="image" href="/good/{{good.id}}">
+            <img src="{{ good.img.url }}" width="100%" alt="">
+        </a>
+        <div class="name">
+            <a href="/good/{{good.id}}">{{good.name}}, {{good.volume}}</a>
+        </div>
+        <div class="bottom">
+            <div class="cost">
+                {{good.cost}} ₽
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<h3>Поиск не дал результатов</h3>
+<p>Посмотрите товары по категориям:</p>
+<ul style="font-size: 1.1em;">
+    <li><a href="/motoroil/">Моторное масло</a></li>
+    <li><a href="/transmission/"> Трансмиссия</a></li>
+    <li><a href="/mototechnic/"> Мототехника</a></li>
+    <li><a href="/technical_liquid/"> Технические жидкости</a></li>
+    <li><a href="/lubricants/"> Смазки</a></li>
+</ul>
+{% endif %}
+{% endblock %}

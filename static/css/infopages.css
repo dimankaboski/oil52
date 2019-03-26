@@ -1,0 +1,13 @@
+.deliver-main {
+    padding-top: 30px;
+    font-size: 1em;
+}
+.deliver-main .text {
+    font-size: 1.2em;
+}
+table {
+    font-size: .9em;
+    font-weight: normal;
+    width: 500px;
+    margin: 20px;
+}

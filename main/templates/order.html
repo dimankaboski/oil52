@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock links %}
+
+{% block content %}
+<div class="order-form" id="totalorder">
+    <div class="order-contact">
+        <form method="POST" id="acceptorder">
+            {% csrf_token %}
+            <div class="title">
+                Оформление заказа
+            </div>
+            <div class="subtitle">
+                <b>Доставка</b>
+            </div>
+            <div class="substring">
+                <div class="label">
+                    Адрес доставки
+                </div>
+                <div class="info">
+                    <input type="text" class="form-control big-inpit" name="adress" required>
+                </div>
+                <div class="label">
+                    Комментарий к заказу
+                </div>
+                <div class="info">
+                    <input type="text" class="form-control big-inpit" name="description" required>
+                    <!-- <textarea class="form-control" name="description" required></textarea> -->
+                </div>
+            </div>
+
+            <div class="subtitle">
+                <b>Контакты</b>
+            </div>
+            <div class="substring">
+                <div class="label">
+                    Имя
+                </div>
+                <div class="info">
+                    <input type="text" class="form-control big-inpit" name="firstname" required>
+                </div>
+                <div class="label">
+                    Фамилия
+                </div>
+                <div class="info">
+                    <input type="text" class="form-control big-inpit" name="lastname" required>
+                </div>
+                <div class="label">
+                    Телефон
+                </div>
+                <div class="info">
+                    <input type="text" class="form-control big-inpit" name="phone" required>
+                </div>
+                <div class="label">
+                    Email
+                </div>
+                <div class="info">
+                    <input type="email" class="form-control big-inpit" name="email">
+                </div>
+            </div>
+            <div class="subtitle">
+                <b>Оплата</b>
+            </div>
+            <div class="substring">
+                <div class="label">
+                    Способ оплаты
+                </div>
+                <div class="info">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="Radiobut" id="inlineRadio1" value="option1" required>
+                        <label class="form-check-label" for="inlineRadio1">Наличными при получении</label>
+                    </div>
+                </div>
+                <div class="label">
+                </div>
+                <div class="info">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" disabled type="radio" name="Radiobut" id="inlineRadio2" value="option2" required>
+                        <label class="form-check-label" for="inlineRadio2">Безналичный расчет онлайн</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="order-accept">
+        <div class="title">
+            Подтверждение заказа
+        </div>
+        <div class="label">
+            <div class="accept-text">
+                <p class="">Подтверждая заказ, вы соглашаетесь:</p>
+                <p class="" style="color:rgb(72, 72, 255);"><a href="/">Обработка персональных данных</a></p>
+                <p class="" style="color:rgb(72, 72, 255);"><a href="/">Условия договора купли-продажи</a></p>
+            </div>
+        </div>
+        <div class="totalsum">
+            <div class="totalprice">
+                К оплате: <b>[[getSum()]]</b>
+            </div>
+            <div class="accept-btn">
+                <button class="buy" type="submit" form="acceptorder">Оформить заказ</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="order-total">
+        <div class="title">
+            Выбранные товары <a href="/cart/" class="smalltext">(редактировать)</a> 
+        </div>
+        <div class="order-total-goods">
+            <div class="order-item" v-for="good in goods">
+                <div class="order-item-name">
+                    [[good.name]], [[good.volume]]
+                </div>
+                <div class="order-item-count">
+                    [[good.count]] шт.
+                </div>
+                <div class="order-item-cost">
+                    [[good.cost]] ₽
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    var totalorder = new Vue({
+        el: '#totalorder',
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                goods: null,
+            };
+        },
+        methods: {
+            getSum: function () {
+                var total = 0;
+                for (i = 0; i < this.goods.length; i++) {
+                    total = total + this.goods[i].count * this.goods[i].cost;
+                }
+                return total;
+            },
+            getcount: function (index) {
+                if (this.goods != undefined)
+                    return this.goods[index].count;
+                else
+                    return 0;
+            },
+        },
+        mounted() {
+            fetch('../getcart', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.goods = responseJson;
+                    console.log(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+    });
+</script>
+{% endblock %}
